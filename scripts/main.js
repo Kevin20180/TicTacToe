@@ -1,12 +1,12 @@
 class Game {
-	marcadorElementos;
+	marcadores;
 	vezElemento;
 	_vez;
 
-	constructor(marcadorElementos, vezElemento) {
-		this.marcadorElementos = marcadorElementos;
+	constructor(marcadores, vezElemento) {
+		this.marcadores = marcadores;
 		this.vezElemento = vezElemento;
-		this._vez = X;
+		this._vez = MARCADOR_X;
 	}
 
 	get vez() {
@@ -18,30 +18,40 @@ class Game {
 	}
 
 	// marcar X ou O
-	marcar(marcadorElemento) {
-		marcadorElemento.innerText = this.vez;
+	marcar(pos) {
+		const marcador = this.marcadores[pos];
+		if(!marcador) return;
+
+		marcador.marcar(this.vez);
 		this.vez = this.vez === MARCADOR_X ? MARCADOR_O : MARCADOR_X;
 	}
 
 	// tentar marcar X ou O, não irá marcar se já estiver marcado
-	tenteMarcar(marcadorElemento) {
-		if(marcadorElemento.innerText) return;
-		this.marcar(marcadorElemento);
-	}
+	tenteMarcar(pos) {
+		const marcador = this.marcadores[pos];
+		if(!marcador || marcador.simbolo) return;
 
-	obterMapa() {
-		return this.marcadorElementos.map((e) => {
-			if(e.innerText.length === 0) return;
-			return e.innerText;
-		})
+		this.marcar(pos);
 	}
 }
 
-// inicializar jogo
-const game = new Game(
-	[...document.querySelectorAll('.marker')],
-	document.querySelector('.turn')
-);
+class Marcador {
+	elemento;
+	_simbolo;
+
+	constructor(elemento) {
+		this.elemento = elemento;
+	}
+
+	get simbolo() {
+		return this._simbolo;
+	}
+
+	marcar(simbolo) {
+		this._simbolo = simbolo;
+		this.elemento.innerText = simbolo;
+	}
+}
 
 const MARCADOR_X = 'X';
 const MARCADOR_O = 'O';
@@ -90,8 +100,16 @@ const MAPA_GANHADOR = [
 	],
 ];
 
-for(const marcador of game.marcadorElementos) {
-	marcador.addEventListener('click', () => {
-		game.tenteMarcar(marcador);
+// inicializar jogo
+const game = new Game(
+	[...document.querySelectorAll('.marker')].map(m => new Marcador(m)),
+	document.querySelector('.turn')
+);
+
+for(let i in game.marcadores) {
+	const marcador = game.marcadores[i];
+
+	marcador.elemento.addEventListener('click', () => {
+		game.tenteMarcar(i);
 	})
 }
