@@ -1,10 +1,12 @@
 class Game {
 	marcadores;
+	vezesMarcado;
 	vezElemento;
 	_vez;
 
 	constructor(marcadores, vezElemento) {
 		this.marcadores = marcadores;
+		this.vezesMarcado = 0;
 		this.vezElemento = vezElemento;
 		this._vez = MARCADOR_X;
 	}
@@ -24,6 +26,7 @@ class Game {
 
 		marcador.marcar(this.vez);
 		this.vez = this.vez === MARCADOR_X ? MARCADOR_O : MARCADOR_X;
+		this.vezesMarcado++;
 	}
 
 	// tentar marcar X ou O, não irá marcar se já estiver marcado
@@ -32,6 +35,25 @@ class Game {
 		if(!marcador || marcador.simbolo) return;
 
 		this.marcar(pos);
+	}
+
+	obterGanhador() {
+		if(this.vezesMarcado < 5) return;
+
+		for(let simbolo of [MARCADOR_X, MARCADOR_O]) {
+			for(const mapa of MAPA_GANHADOR) {
+				let correspondencias = 0;
+
+				for(let i in mapa) {
+					if(!mapa[i]) continue;
+
+					const marcador = this.marcadores[i];
+					if(marcador.simbolo === simbolo) correspondencias++;
+				}
+
+				if(correspondencias >= 3) return simbolo;
+			}
+		}
 	}
 }
 
