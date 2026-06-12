@@ -5,12 +5,14 @@ body {
 .game {
     border: 1px solid black;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
 .row {
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
 }
 
 .marker {
