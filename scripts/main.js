@@ -71,7 +71,17 @@ class Marcador {
 
 	marcar(simbolo) {
 		this._simbolo = simbolo;
-		this.elemento.innerText = simbolo;
+		
+
+		if(simbolo === MARCADOR_X) {
+			this.elemento.innerText = '✖️';
+			this.elemento.classList.remove('marker_o');
+			this.elemento.classList.add('marker_x');
+		} else {
+			this.elemento.innerText = '️⭕️';
+			this.elemento.classList.remove('marker_x');
+			this.elemento.classList.add('marker_o');
+		}
 	}
 }
 
