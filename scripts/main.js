@@ -47,16 +47,20 @@ class Game {
 
 		for(let simbolo of [MARCADOR_X, MARCADOR_O]) {
 			for(const mapa of MAPA_GANHADOR) {
-				let correspondencias = 0;
+				let marcadoresCorresp = [];
 
 				for(let i in mapa) {
 					if(!mapa[i]) continue;
 
 					let marcadorSimbolo = this.partida.mapaMarcadores[i];
-					if(marcadorSimbolo === simbolo) correspondencias++;
+					if(marcadorSimbolo === simbolo) {
+						marcadoresCorresp.push(this.marcadores[i]);
+					}
 				}
 
-				if(correspondencias >= 3) return simbolo;
+				if(marcadoresCorresp.length >= 3) {
+					return new Ganhador(simbolo, marcadoresCorresp);
+				}
 			}
 		}
 	}
@@ -65,13 +69,28 @@ class Game {
 class Marcador {
 	elemento;
 	_simbolo;
+	_corresponde;
 
 	constructor(elemento) {
 		this.elemento = elemento;
+		this._corresponde = false;
 	}
 
 	get simbolo() {
 		return this._simbolo;
+	}
+
+	get corresponde() {
+		return this._corresponde;
+	}
+	set corresponde(a) {
+		this._corresponde = a;
+
+		if(a) {
+			this.elemento.classList.add('corresponde');
+		} else {
+			this.elemento.classList.remove('corresponde');
+		}
 	}
 
 	marcar(simbolo) {
@@ -124,7 +143,18 @@ class Partida {
 
 		for(const marcador of this.game.marcadores) {
 			marcador.marcar(undefined);
+			marcador.corresponde = false;
 		}
+	}
+}
+
+class Ganhador {
+	simbolo;
+	marcadores;
+
+	constructor(simbolo, marcadores) {
+		this.simbolo = simbolo;
+		this.marcadores = marcadores;
 	}
 }
 
@@ -198,8 +228,12 @@ for(let i in game.marcadores) {
 		
 		game.partida.parar();
 
+		for(const marcador of ganhador.marcadores) {
+			marcador.corresponde = true;
+		}
+
 		setTimeout(() => {
-			if(ganhador) alert("O ganhador dessa partida é o " + ganhador);
+			if(ganhador) alert("O ganhador dessa partida é o " + ganhador.simbolo);
 		}, 500)
 	})
 }

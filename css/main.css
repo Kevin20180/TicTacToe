@@ -33,3 +33,7 @@ body {
 .marker_o {
 	color: red;
 }
+
+.corresponde {
+	background: rgba(0, 150, 255, 0.2);
+}
